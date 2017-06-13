@@ -1,5 +1,8 @@
 package javapns;
 
+import java.util.List;
+import java.util.Vector;
+
 import javapns.communication.exceptions.CommunicationException;
 import javapns.communication.exceptions.KeystoreException;
 import javapns.devices.Device;
@@ -9,13 +12,18 @@ import javapns.devices.implementations.basic.BasicDevice;
 import javapns.feedback.AppleFeedbackServer;
 import javapns.feedback.AppleFeedbackServerBasicImpl;
 import javapns.feedback.FeedbackServiceManager;
-import javapns.notification.*;
+import javapns.notification.AppleNotificationServer;
+import javapns.notification.AppleNotificationServerBasicImpl;
+import javapns.notification.NewsstandNotificationPayload;
+import javapns.notification.Payload;
+import javapns.notification.PayloadPerDevice;
+import javapns.notification.PushNotificationManager;
+import javapns.notification.PushNotificationPayload;
+import javapns.notification.PushedNotification;
+import javapns.notification.PushedNotifications;
 import javapns.notification.transmission.NotificationThread;
 import javapns.notification.transmission.NotificationThreads;
 import javapns.notification.transmission.PushQueue;
-
-import java.util.List;
-import java.util.Vector;
 
 /**
  * <p>Main class for easily interacting with the Apple Push Notification System</p>
@@ -213,7 +221,10 @@ public class Push {
       threads.waitForAllThreads(true);
     } catch (final InterruptedException e) {
     }
-    return threads.getPushedNotifications();
+
+    final PushedNotifications pushedNotifications = threads.getPushedNotifications();
+    threads.destroy();
+    return pushedNotifications;
   }
 
   /**
@@ -273,7 +284,10 @@ public class Push {
       threads.waitForAllThreads(true);
     } catch (final InterruptedException e) {
     }
-    return threads.getPushedNotifications();
+
+    final PushedNotifications pushedNotifications = threads.getPushedNotifications();
+    threads.destroy();
+    return pushedNotifications;
   }
 
   /**
